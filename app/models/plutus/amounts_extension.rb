@@ -2,7 +2,7 @@ module Plutus
   # Association extension for has_many :amounts relations. Internal.
   module AmountsExtension
     # Returns a sum of the referenced Amount objects.
-    def balance
+    def balance(options = {})
       owner = @association.instance_variable_get("@owner")
       currency = owner.try(:currency) || first.currency
 

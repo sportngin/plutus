@@ -28,10 +28,10 @@ module Plutus
 
     describe ".trial_balance" do
       subject { Account.trial_balance }
-      it { should be_kind_of Integer }
+      it { should be_kind_of Money }
 
       context "when given no entries" do
-        it { should == 0 }
+        it { should == 0.to_money }
       end
 
       context "when given correct entries" do
@@ -69,7 +69,7 @@ module Plutus
           FactoryGirl.create(:entry, :credit_amounts => [ca5], :debit_amounts => [da5])
         }
 
-        it { should == 0 }
+        it { should == 0.to_money }
       end
     end
   end

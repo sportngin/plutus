@@ -130,12 +130,12 @@ module Plutus
     #   >> Plutus::Liability.balance
     #   => #<BigDecimal:1030fcc98,'0.82875E5',8(20)>
     #
-    # @return [BigDecimal] The decimal value balance
+    # @return [Money] The credit balance as a Money object
     def self.balance(options={})
       if self.new.class == Plutus::Account
         raise(NoMethodError, "undefined method 'balance'")
       else
-        accounts_balance = BigDecimal.new('0')
+        accounts_balance = 0.to_money(options[:currency])
         accounts = self.all
         accounts.each do |account|
           if account.contra

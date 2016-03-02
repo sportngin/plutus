@@ -5,7 +5,7 @@ shared_examples_for 'a Plutus::Account subtype' do |elements|
 
   describe "class methods" do
     subject { account.class }
-    its(:balance) { should be_kind_of(Integer) }
+    its(:balance) { should be_kind_of(Money) }
     describe "trial_balance" do
       it "should raise NoMethodError" do
         lambda { subject.trial_balance }.should raise_error NoMethodError
@@ -17,7 +17,7 @@ shared_examples_for 'a Plutus::Account subtype' do |elements|
     its(:balance) { should be_kind_of(Money) }
 
     it "reports a balance with date range" do
-      account.balance(:from_date => "2014-01-01", :to_date => Date.today).should be_kind_of(BigDecimal)
+      account.balance(:from_date => "2014-01-01", :to_date => Date.today).should be_kind_of(Money)
     end
 
     it { should respond_to(:credit_entries) }
@@ -40,21 +40,21 @@ shared_examples_for 'a Plutus::Account subtype' do |elements|
 
   describe "when given a debit" do
     before { FactoryGirl.create(:debit_amount, account: account) }
-    its(:balance) { should be.send(debit_condition, 0) }
+    its(:balance) { should be.send(debit_condition, 0.to_money) }
 
     describe "on a contra account" do
       let(:contra) { true }
-      its(:balance) { should be.send(credit_condition, 0) }
+      its(:balance) { should be.send(credit_condition, 0.to_money) }
     end
   end
 
   describe "when given a credit" do
     before { FactoryGirl.create(:credit_amount, account: account) }
-    its(:balance) { should be.send(credit_condition, 0) }
+    its(:balance) { should be.send(credit_condition, 0.to_money) }
 
     describe "on a contra account" do
       let(:contra) { true }
-      its(:balance) { should be.send(debit_condition, 0) }
+      its(:balance) { should be.send(debit_condition, 0.to_money) }
     end
   end
 end

@@ -71,7 +71,7 @@ module Plutus
 
     it "should require the debits and credits to all be in the same currency" do
       entry = FactoryGirl.build(:entry)
-      #account = FactoryGirl.build(:revenue, currency: "GBP")
+      account = FactoryGirl.build(:revenue, currency: "GBP")
       entry.credit_amounts << FactoryGirl.build(:credit_amount, :entry => entry)
       entry.debit_amounts << FactoryGirl.build(:debit_amount, :account => account, :entry => entry)
       entry.should_not be_valid
