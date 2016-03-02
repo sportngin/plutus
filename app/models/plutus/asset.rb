@@ -9,22 +9,27 @@ module Plutus
   # @author Michael Bulat
   class Asset < Account
 
+    self.normal_credit_balance = false
+
     # The balance of the account.
     #
     # Assets have normal debit balances, so the credits are subtracted from the debits
     # unless this is a contra account, in which debits are subtracted from credits
+    #
+    # Takes an optional hash specifying :from_date and :to_date for calculating balances during periods.
+    # :from_date and :to_date may be strings of the form "yyyy-mm-dd" or Ruby Date objects
+    #
+    # @example
+    #   >> asset.balance({:from_date => "2000-01-01", :to_date => Date.today})
+    #   => #<BigDecimal:103259bb8,'0.1E4',4(12)>
     #
     # @example
     #   >> asset.balance
     #   => #<Money fractional:250 currency:USD>
     #
     # @return [Money] The balance as a Money object
-    def balance
-      unless contra
-        debits_balance - credits_balance
-      else
-        credits_balance - debits_balance
-      end
+    def balance(options={})
+      super(options)
     end
 
     # This class method is used to return
@@ -32,22 +37,20 @@ module Plutus
     #
     # Contra accounts are automatically subtracted from the balance.
     #
+    # Takes an optional hash specifying :from_date and :to_date for calculating balances during periods.
+    # :from_date and :to_date may be strings of the form "yyyy-mm-dd" or Ruby Date objects
+    #
+    # @example
+    #   >> Plutus::Asset.balance({:from_date => "2000-01-01", :to_date => Date.today})
+    #   => #<BigDecimal:103259bb8,'0.1E4',4(12)>
+    #
     # @example
     #   >> Plutus::Asset.balance
     #   => 20
     #
     # @return [Integer] The fractional value as an integer
-    def self.balance
-      accounts_balance = 0
-      accounts = self.all
-      accounts.each do |asset|
-        unless asset.contra
-          accounts_balance += asset.balance.fractional
-        else
-          accounts_balance -= asset.balance.fractional
-        end
-      end
-      accounts_balance
+    def self.balance(options={})
+      super(options)
     end
   end
 end

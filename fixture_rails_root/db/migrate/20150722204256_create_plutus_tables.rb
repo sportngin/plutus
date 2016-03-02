@@ -12,11 +12,13 @@ class CreatePlutusTables < ActiveRecord::Migration
 
     create_table :plutus_entries do |t|
       t.string :description
+      t.date :date
       t.integer :commercial_document_id
       t.string :commercial_document_type
 
       t.timestamps
     end
+    add_index :plutus_entries, :date
     add_index :plutus_entries, [:commercial_document_id, :commercial_document_type], :name => "index_entries_on_commercial_doc"
 
     create_table :plutus_amounts do |t|

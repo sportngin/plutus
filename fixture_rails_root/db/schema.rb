@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141027103120) do
+ActiveRecord::Schema.define(:version => 20150722204422) do
 
   create_table "plutus_accounts", :force => true do |t|
     t.string   "name"
@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(:version => 20141027103120) do
     t.string   "currency",   :default => "USD", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "tenant_id"
+    t.integer  "tenant_id"
   end
 
   add_index "plutus_accounts", ["name", "type"], :name => "index_plutus_accounts_on_name_and_type"
@@ -38,6 +38,7 @@ ActiveRecord::Schema.define(:version => 20141027103120) do
 
   create_table "plutus_entries", :force => true do |t|
     t.string   "description"
+    t.date     "date"
     t.integer  "commercial_document_id"
     t.string   "commercial_document_type"
     t.datetime "created_at"
@@ -45,5 +46,6 @@ ActiveRecord::Schema.define(:version => 20141027103120) do
   end
 
   add_index "plutus_entries", ["commercial_document_id", "commercial_document_type"], :name => "index_entries_on_commercial_doc"
+  add_index "plutus_entries", ["date"], :name => "index_plutus_entries_on_date"
 
 end

@@ -9,42 +9,48 @@ module Plutus
   # @author Michael Bulat
   class Liability < Account
 
+    self.normal_credit_balance = true
+
     # The balance of the account.
     #
     # Liability accounts have normal credit balances, so the debits are subtracted from the credits
     # unless this is a contra account, in which credits are subtracted from debits
+    #
+    # Takes an optional hash specifying :from_date and :to_date for calculating balances during periods.
+    # :from_date and :to_date may be strings of the form "yyyy-mm-dd" or Ruby Date objects
+    #
+    # @example
+    #   >> liability.balance({:from_date => "2000-01-01", :to_date => Date.today})
+    #   => #<BigDecimal:103259bb8,'0.1E4',4(12)>
     #
     # @example
     #   >> liability.balance
     #   => #<Money fractional:250 currency:USD>
     #
     # @return [Money] The balance as a Money object
-    def balance
-      unless contra
-        credits_balance - debits_balance
-      else
-        debits_balance - credits_balance
-      end
+    def balance(options={})
+      super
     end
 
-    # Balance of all Liability accounts
+    # This class method is used to return
+    # the balance of all Liability accounts.
+    #
+    # Contra accounts are automatically subtracted from the balance.
+    #
+    # Takes an optional hash specifying :from_date and :to_date for calculating balances during periods.
+    # :from_date and :to_date may be strings of the form "yyyy-mm-dd" or Ruby Date objects
+    #
+    # @example
+    #   >> Plutus::Liability.balance({:from_date => "2000-01-01", :to_date => Date.today})
+    #   => #<BigDecimal:103259bb8,'0.1E4',4(12)>
     #
     # @example
     #   >> Plutus::Liability.balance
-    #   => 20
+    #   => #<BigDecimal:1030fcc98,'0.82875E5',8(20)>
     #
-    # @return [Integer] The fractional value as an integer
-    def self.balance
-      accounts_balance = 0
-      accounts = self.all
-      accounts.each do |liability|
-        unless liability.contra
-          accounts_balance += liability.balance.fractional
-        else
-          accounts_balance -= liability.balance.fractional
-        end
-      end
-      accounts_balance
+    # @return [Money] The balance as a Money object
+    def self.balance(options={})
+      super
     end
   end
 end
